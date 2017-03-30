@@ -28,11 +28,59 @@
 <script>
   const addItems = document.querySelector('.add-items');
   const itemsList = document.querySelector('.plates');
-  const items = [];
+  // check for items in localStorage, if none then an empty array
+  const items = JSON.parse(localStorage.getItem('items')) || [];
+
+  function addItem(e) {
+    // prevent form from submitting
+    e.preventDefault();
+    // 'this' refers to the form element
+    const text = (this.querySelector('[name=item]')).value;
+    const item = {
+      text,
+      done: false
+    };
+    items.push(item);
+    populateList(items, itemsList);
+    // save items to browser localStorage as plain text
+    localStorage.setItem('items', JSON.stringify(items));
+    // 'this' refers to the form element which has .rest() method
+    this.reset();
+  }
+
+  function populateList(plates = [], platesList) {
+    platesList.innerHTML = plates.map((plate, i) => {
+      return `
+        <li>
+        <input type="checkbox" data-index=${i} id="item${i}" ${plate.done ? 'checked' : ''} />
+          <label for="item${i}">${plate.text}</label>
+        </li>
+      `;
+    }).join('');
+  }
+
+  function toggleDone(e) {
+    // skip this unless it's an input
+    if (!e.target.matches('input')) return;
+    // select the input element clicked
+    const el = e.target;
+    // get elements dataset index
+    const index = el.dataset.index;
+    // whatever item done value is, set it to opposite value
+    items[index].done = !items[index].done;
+    // save item done value to localStorage
+    localStorage.setItem('items', JSON.stringify(items));
+    // run populateList to update item visibility on page
+    populateList(items, itemsList);
+  }
+
+  addItems.addEventListener('submit', addItem);
+  itemsList.addEventListener('click', toggleDone);
+
+  populateList(items, itemsList);
 
 </script>
 
 
 </body>
 </html>
-
