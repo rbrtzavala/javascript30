@@ -67,11 +67,11 @@
     // get elements dataset index
     const index = el.dataset.index;
     // whatever item done value is, set it to opposite value
-    items[index].done = !items[index].done;
+    items[index].done = !item[index].done;
     // save item done value to localStorage
     localStorage.setItem('items', JSON.stringify(items));
-    // run populateList to update item visibility on page
-    populateList(items, itemsList);
+    // run populateList to update
+    populateList(items, itemList);
   }
 
   addItems.addEventListener('submit', addItem);
